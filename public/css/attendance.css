@@ -1,0 +1,302 @@
+/* public/css/attendance.css */
+
+
+.form-group {
+  margin-bottom: 1.2rem;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.form-control {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 1rem;
+  transition: var(--transition);
+}
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: rgba(255,255,255,0.05);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+select.form-control {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+}
+
+.attendance-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding-bottom: 3rem;
+}
+
+/* Premium Card Base */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Premium soft shadow */
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08); /* Deeper shadow on hover */
+}
+
+/* Row Formats */
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.flex-1 { flex: 1; min-width: 150px; }
+.flex-2 { flex: 2; min-width: 250px; }
+
+/* Enhanced Header Card */
+.header-card {
+  margin-top: 1rem;
+  background: linear-gradient(to right, var(--bg-card), #fcfcfc); /* Subtle gradient */
+  border-left: 4px solid var(--primary); /* Accent line */
+}
+
+/* Modern Selector Card */
+.selector-card {
+  background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.03) 0%, rgba(var(--primary-rgb), 0.08) 100%);
+  border: 1px solid rgba(var(--primary-rgb), 0.15);
+  backdrop-filter: blur(5px); /* Glassmorphism hint */
+}
+
+.employee-attendance-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Individual Employee Card */
+.employee-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 1.2rem 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  border: 1px solid var(--border-color);
+  animation: slideIn 0.35s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.employee-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+}
+
+.employee-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.employee-card-header h4 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+}
+
+.employee-card-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+}
+
+.employee-card-body .form-group {
+  margin-bottom: 0;
+  flex: 1;
+  min-width: 140px;
+}
+
+
+
+/* Premium Buttons */
+.btn-remove {
+  color: var(--danger);
+  background: rgba(var(--danger-rgb), 0.1);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%; /* Circular button for elegance */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-remove:hover {
+  background: var(--danger);
+  color: white;
+  transform: rotate(90deg); /* Playful micro-animation */
+}
+
+/* Dynamic Submit Button */
+#btn-submit-attendance {
+  background: linear-gradient(135deg, var(--primary) 0%, #2563eb 100%);
+  border: none;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#btn-submit-attendance:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.4);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: rgba(255,255,255,0.7);
+  border: 2px dashed rgba(0,0,0,0.1);
+  border-radius: var(--radius-lg);
+  color: var(--text-muted);
+  backdrop-filter: blur(5px);
+}
+
+.empty-icon {
+  font-size: 3.5rem;
+  color: rgba(0,0,0,0.1);
+  margin-bottom: 1.2rem;
+}
+
+.empty-state p:first-of-type {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .employee-card-body {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  .form-row {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+  .employee-selector-row {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+  .employee-selector-row button {
+    width: 100%;
+  }
+  #btn-submit-attendance {
+    width: 100%;
+  }
+}
+
+/* ── Attendance List Cards ──────────────────────────── */
+.attendance-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.attendance-record-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  margin-bottom: 1.2rem;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.attendance-record-card:hover {
+  border-color: var(--primary);
+}
+
+/* Employee count badge on listing cards */
+.attendance-emp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--primary);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  white-space: nowrap;
+}
+
+/* ── Detail Table ───────────────────────────────────── */
+.attendance-detail-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.attendance-detail-table thead tr {
+  border-bottom: 2px solid var(--border);
+}
+
+.attendance-detail-table th {
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.attendance-detail-table td {
+  padding: 0.7rem 0.75rem;
+  color: var(--text-primary);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: middle;
+}
+
+.attendance-detail-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.attendance-detail-table tbody tr:hover td {
+  background: rgba(255,255,255,0.02);
+}

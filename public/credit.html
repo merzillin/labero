@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Credits - Labero</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/navbar.css" />
+    <link rel="stylesheet" href="/css/credit.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="container">
+        <a href="/" class="navbar-brand">
+          <i class="fa-solid fa-helmet-safety"></i>
+          Lab<span>ero</span>
+        </a>
+
+        <button class="mobile-toggle" id="mobileToggle">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <ul class="navbar-nav" id="navbarNav">
+          <li><a href="/" class="active">Dashboard</a></li>
+          <li><a href="/project.html">Projects</a></li>
+          <li><a href="/employee.html">Employees</a></li>
+          <li><a href="/attendance.html">Attendance</a></li>
+          <li><a href="/credit.html">Credits</a></li>
+          <li><a href="/debit.html">Debits</a></li>
+          <li><a href="/report.html">Report</a></li>
+        </ul>
+        <div class="navbar-actions">
+          <button class="profile-btn">
+            <div class="profile-avatar">A</div>
+            <span>Admin</span>
+            <i
+              class="fa-solid fa-chevron-down text-muted"
+              style="font-size: 0.8rem"
+            ></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <div class="container">
+        <!-- List View -->
+        <div id="view-list" class="view-section active">
+          <div class="credit-header">
+            <h2>Credit Listing</h2>
+            <span class="text-muted" style="font-size: 0.875rem"
+              ><i class="fa-solid fa-coins"></i> Transactions</span
+            >
+          </div>
+
+          <div class="credit-list" id="credit-list">
+            <!-- Cards inserted dynamically -->
+          </div>
+
+          <div class="pagination" id="pagination">
+            <button class="btn btn-outline btn-icon" id="btn-prev">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <span id="page-info">Page 1 of 1</span>
+            <button class="btn btn-outline btn-icon" id="btn-next">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+
+          <button class="btn btn-primary btn-round" id="btn-add-new">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+
+        <!-- Form View -->
+        <div id="view-form" class="view-section screen-overlay">
+          <div class="credit-header">
+            <button class="btn btn-icon" id="btn-back-form">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <h2 id="form-title" style="margin: 0; flex: 1; text-align: center">
+              Add Credit
+            </h2>
+            <div style="width: 40px"></div>
+          </div>
+          <div class="form-container">
+            <form id="credit-form">
+              <input type="hidden" id="credit_id" name="credit_id" />
+
+              <div class="form-group">
+                <label
+                  >Credit Amount
+                  <span style="color: var(--danger)">*</span></label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="credit_amount"
+                  required
+                  placeholder="Ex: 1000"
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Pay By </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="pay_by"
+                  placeholder="Person Responsible"
+                />
+              </div>
+
+              <div class="form-group">
+                <label
+                  >Project <span style="color: var(--danger)">*</span></label
+                >
+                <select class="form-control" id="project_id" required>
+                  <!-- Dynamically populated -->
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label
+                  style="
+                    display: block;
+                    font-weight: 600;
+                    margin-bottom: 6px;
+                    color: #333;
+                  "
+                >
+                  Date
+                  <span style="color: #e63946; margin-left: 2px">*</span>
+                  <span
+                    style="
+                      display: block;
+                      font-size: 12px;
+                      color: #6c757d;
+                      margin-top: 2px;
+                    "
+                  >
+                    Month-Day-Year
+                  </span>
+                </label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="credit_date"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Time </label>
+                <input type="time" class="form-control" id="credit_time" />
+              </div>
+
+              <button
+                type="submit"
+                class="btn btn-primary btn-block"
+                style="margin-top: 1rem"
+              >
+                <i class="fa-solid fa-floppy-disk"></i> Save Credit
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Detail View -->
+        <div id="view-details" class="view-section screen-overlay">
+          <div class="credit-header">
+            <button class="btn btn-icon" id="btn-back-details">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <h2 style="margin: 0; flex: 1; text-align: center">Credit Info</h2>
+            <div style="width: 40px"></div>
+          </div>
+          <div class="details-container" id="details-container">
+            <!-- Content dynamically inserted -->
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-backdrop" id="delete-modal">
+      <div class="modal-content">
+        <h3 style="color: var(--text-primary)">
+          <i
+            class="fa-solid fa-triangle-exclamation"
+            style="color: var(--danger)"
+          ></i>
+          Delete Credit?
+        </h3>
+        <p>
+          Are you sure you want to permanently delete this credit record? This
+          cannot be undone.
+        </p>
+        <div class="modal-actions">
+          <button class="btn btn-outline" id="btn-cancel-delete">Cancel</button>
+          <button class="btn btn-danger" id="btn-confirm-delete">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/navbar.js"></script>
+    <script src="/js/credit.js"></script>
+  </body>
+</html>

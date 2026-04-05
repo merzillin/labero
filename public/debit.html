@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Debits - Labero</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/navbar.css" />
+    <link rel="stylesheet" href="/css/debit.css" />
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="container">
+        <a href="/" class="navbar-brand">
+          <i class="fa-solid fa-helmet-safety"></i>
+          Lab<span>ero</span>
+        </a>
+        <button class="mobile-toggle" id="mobileToggle">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <ul class="navbar-nav" id="navbarNav">
+          <li><a href="/" class="active">Dashboard</a></li>
+          <li><a href="/project.html">Projects</a></li>
+          <li><a href="/employee.html">Employees</a></li>
+          <li><a href="/attendance.html">Attendance</a></li>
+          <li><a href="/credit.html">Credits</a></li>
+          <li><a href="/debit.html">Debits</a></li>
+          <li><a href="/report.html">Report</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <div class="container">
+        <!-- LIST VIEW -->
+        <div id="view-list" class="view-section active">
+          <div class="credit-header">
+            <h2>Debit Listing</h2>
+            <span class="text-muted"
+              ><i class="fa-solid fa-money-bill-wave"></i> Expenses</span
+            >
+          </div>
+
+          <div id="debit-list"></div>
+
+          <button class="btn btn-primary btn-round" id="btn-add-new">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+
+        <!-- FORM VIEW -->
+        <div id="view-form" class="view-section screen-overlay">
+          <div class="credit-header">
+            <button class="btn btn-icon" id="btn-back-form">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <h2 id="form-title">Add Debit</h2>
+            <div></div>
+          </div>
+
+          <div class="form-container">
+            <form id="debit-form">
+              <input type="hidden" id="debit_id" />
+
+              <div class="form-group">
+                <label>Debit Amount *</label>
+                <input
+                  type="number"
+                  id="debit_amount"
+                  class="form-control"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Project *</label>
+                <select id="project_id" class="form-control" required></select>
+              </div>
+
+              <div class="form-group">
+                <label>Name *</label>
+                <input type="text" id="name" class="form-control" required />
+              </div>
+
+              <div class="form-group">
+                <label>Description</label>
+                <input type="text" id="description" class="form-control" />
+              </div>
+
+              <div class="form-group">
+                <label>Date *</label>
+                <input type="date" id="date" class="form-control" required />
+              </div>
+
+              <button class="btn btn-primary btn-block">Save Debit</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- DETAILS VIEW -->
+        <div id="view-details" class="view-section screen-overlay">
+          <div class="credit-header">
+            <button class="btn btn-icon" id="btn-back-details">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <h2>Debit Info</h2>
+            <div></div>
+          </div>
+
+          <div id="details-container"></div>
+        </div>
+
+        <!-- DELETE MODAL -->
+        <div class="modal-backdrop" id="delete-modal">
+          <div class="modal-content">
+            <h3>Delete Debit?</h3>
+            <p>This action cannot be undone.</p>
+            <div class="modal-actions">
+              <button class="btn btn-outline" id="btn-cancel-delete">
+                Cancel
+              </button>
+              <button class="btn btn-danger" id="btn-confirm-delete">
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="/js/debit.js"></script>
+    <script src="/js/navbar.js"></script>
+  </body>
+</html>

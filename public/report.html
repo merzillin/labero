@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Report - Labero</title>
+
+    <!-- Google Fonts & Font Awesome -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/navbar.css" />
+    <link rel="stylesheet" href="/css/report.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="container">
+        <a href="/" class="navbar-brand">
+          <i class="fa-solid fa-helmet-safety"></i>
+          Lab<span>ero</span>
+        </a>
+
+        <button class="mobile-toggle" id="mobileToggle">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <ul class="navbar-nav" id="navbarNav">
+          <li><a href="/" class="active">Dashboard</a></li>
+          <li><a href="/project.html">Projects</a></li>
+          <li><a href="/employee.html">Employees</a></li>
+          <li><a href="/attendance.html">Attendance</a></li>
+          <li><a href="/credit.html">Credits</a></li>
+          <li><a href="/debit.html">Debits</a></li>
+          <li><a href="/report.html">Report</a></li>
+        </ul>
+
+        <div class="navbar-actions">
+          <button class="profile-btn">
+            <div class="profile-avatar">A</div>
+            <span>Admin</span>
+            <i
+              class="fa-solid fa-chevron-down text-muted"
+              style="font-size: 0.8rem"
+            ></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="container" style="margin-top: 20px">
+        <!-- Report Filter Form -->
+        <div class="report-form-container">
+          <form id="report-form" class="report-form">
+            <div class="form-group">
+              <label for="from_date">From Date</label>
+              <input
+                type="date"
+                id="from_date"
+                name="from_date"
+                class="form-control"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label>To Date <span style="color: var(--danger)">*</span></label>
+              <input
+                type="date"
+                id="to_date"
+                name="to_date"
+                class="form-control"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="project_id">Project</label>
+              <select id="project_id" name="project_id" class="form-control">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="status_id">Status</label>
+              <select id="status_id" name="status_id" class="form-control">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              <i class="fa-solid fa-filter"></i> Filter
+            </button>
+          </form>
+        </div>
+
+        <!-- Download Button -->
+        <div
+          class="download-container"
+          style="margin: 20px 0; text-align: center"
+        >
+          <button id="downloadReportBtn" class="btn btn-outline">
+            <i class="fa-solid fa-download"></i> Download
+          </button>
+        </div>
+
+        <!-- Report Results -->
+        <div id="reportResults" class="report-results">
+          <!-- Dynamically populated report content -->
+        </div>
+      </div>
+    </main>
+
+    <!-- JS Files -->
+    <script src="/js/navbar.js"></script>
+    <script src="/js/report.js"></script>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+@import url('/css/credit.css');
+@import url('/css/style.css');
+
+
+/* Debit specific tweaks */
+.debit-card {
+  border-left: 4px solid var(--danger);
+}
+
+.debit-amount {
+  color: var(--danger);
+  font-weight: 700;
+  font-size: 1.2rem;
+}

@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Projects - Labero</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/navbar.css" />
+    <link rel="stylesheet" href="/css/project.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="container">
+        <a href="/" class="navbar-brand">
+          <i class="fa-solid fa-helmet-safety"></i>
+          Lab<span>ero</span>
+        </a>
+
+        <button class="mobile-toggle" id="mobileToggle">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <ul class="navbar-nav" id="navbarNav">
+          <li><a href="/" class="active">Dashboard</a></li>
+          <li><a href="/project.html">Projects</a></li>
+          <li><a href="/employee.html">Employees</a></li>
+          <li><a href="/attendance.html">Attendance</a></li>
+          <li><a href="/credit.html">Credits</a></li>
+          <li><a href="/debit.html">Debits</a></li>
+          <li><a href="/report.html">Report</a></li>
+        </ul>
+        <div class="navbar-actions">
+          <button class="profile-btn">
+            <div class="profile-avatar">A</div>
+            <span>Admin</span>
+            <i
+              class="fa-solid fa-chevron-down text-muted"
+              style="font-size: 0.8rem"
+            ></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="container">
+        <!-- List View -->
+        <div id="view-list" class="view-section active">
+          <div class="app-header">
+            <h2 style="margin: 0">Projects Hub</h2>
+            <span class="text-muted" style="font-size: 0.875rem"
+              ><i class="fa-solid fa-list"></i> Directory</span
+            >
+          </div>
+
+          <div class="project-list" id="project-list">
+            <!-- Cards go here dynamically -->
+          </div>
+
+          <div class="pagination" id="pagination">
+            <button class="btn btn-outline btn-icon" id="btn-prev">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <span id="page-info">Page 1 of 1</span>
+            <button class="btn btn-outline btn-icon" id="btn-next">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+
+          <!-- Fixed FAB -->
+          <button class="btn btn-primary btn-round" id="btn-add-new">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+
+        <!-- Form View (Add/Edit) -->
+        <div id="view-form" class="view-section screen-overlay">
+          <div class="app-header">
+            <button class="btn btn-icon" id="btn-back-form">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <h2 id="form-title" style="margin: 0; flex: 1; text-align: center">
+              Add Project
+            </h2>
+            <div style="width: 40px"></div>
+          </div>
+          <div class="form-container">
+            <form id="project-form">
+              <input type="hidden" id="project_id" name="project_id" />
+
+              <div class="form-group">
+                <label
+                  >Project Name
+                  <span style="color: var(--danger)">*</span></label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="project_name"
+                  required
+                  placeholder="Ex: Skyline Tower"
+                />
+              </div>
+
+              <div class="form-group">
+                <label
+                  >Owner Name <span style="color: var(--danger)">*</span></label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="owner_name"
+                  required
+                  placeholder="Full Name"
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Contractor Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="contractor_name"
+                  placeholder="Optional"
+                />
+              </div>
+
+              <div class="form-group">
+                <label
+                  >Location / Address
+                  <span style="color: var(--danger)">*</span></label
+                >
+                <textarea
+                  class="form-control"
+                  id="address"
+                  rows="3"
+                  required
+                  placeholder="Full site address"
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label
+                  >Type of Work
+                  <span style="color: var(--danger)">*</span></label
+                >
+                <select class="form-control" id="type_of_work" required>
+                  <!-- Hydrated from JS Endpoint -->
+                </select>
+              </div>
+
+              <div class="form-group" id="status-group">
+                <label
+                  >Status <span style="color: var(--danger)">*</span></label
+                >
+                <select class="form-control" id="status" required>
+                  <option value="1">Active</option>
+                  <option value="2">Completed</option>
+                </select>
+              </div>
+
+              <button
+                type="submit"
+                class="btn btn-primary btn-block"
+                style="margin-top: 1rem"
+              >
+                <i class="fa-solid fa-floppy-disk"></i> Save Project
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Detail View -->
+        <div id="view-details" class="view-section screen-overlay">
+          <div class="app-header">
+            <button class="btn btn-icon" id="btn-back-details">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <h2 style="margin: 0; flex: 1; text-align: center">Project Info</h2>
+            <div style="width: 40px"></div>
+          </div>
+          <div class="details-container" id="details-container">
+            <!-- Details content dynamically inserted -->
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-backdrop" id="delete-modal">
+      <div class="modal-content">
+        <h3 style="color: var(--text-primary)">
+          <i
+            class="fa-solid fa-triangle-exclamation"
+            style="color: var(--danger)"
+          ></i>
+          Delete Project?
+        </h3>
+        <p>
+          Are you sure you want to permanently delete this project? Data cannot
+          be recovered.
+        </p>
+        <div class="modal-actions">
+          <button class="btn btn-outline" id="btn-cancel-delete">Cancel</button>
+          <button class="btn btn-danger" id="btn-confirm-delete">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/navbar.js"></script>
+    <script src="/js/project.js"></script>
+  </body>
+</html>

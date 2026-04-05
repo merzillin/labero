@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employees - Labero</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/navbar.css" />
+    <link rel="stylesheet" href="/css/employee.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="container">
+        <a href="/" class="navbar-brand">
+          <i class="fa-solid fa-helmet-safety"></i>
+          Lab<span>ero</span>
+        </a>
+
+        <button class="mobile-toggle" id="mobileToggle">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <ul class="navbar-nav" id="navbarNav">
+          <li><a href="/" class="active">Dashboard</a></li>
+          <li><a href="/project.html">Projects</a></li>
+          <li><a href="/employee.html">Employees</a></li>
+          <li><a href="/attendance.html">Attendance</a></li>
+          <li><a href="/credit.html">Credits</a></li>
+          <li><a href="/debit.html">Debits</a></li>
+          <li><a href="/report.html">Report</a></li>
+        </ul>
+
+        <div class="navbar-actions">
+          <button class="profile-btn">
+            <div class="profile-avatar">A</div>
+            <span>Admin</span>
+            <i
+              class="fa-solid fa-chevron-down text-muted"
+              style="font-size: 0.8rem"
+            ></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="container">
+        <!-- List View -->
+        <div id="view-list" class="view-section active">
+          <div class="app-header">
+            <h2 style="margin: 0">Employee Roster</h2>
+            <span class="text-muted" style="font-size: 0.875rem"
+              ><i class="fa-solid fa-users"></i> Directory</span
+            >
+          </div>
+
+          <div class="employee-list" id="employee-list">
+            <!-- Cards go here dynamically -->
+          </div>
+
+          <div class="pagination" id="pagination">
+            <button class="btn btn-outline btn-icon" id="btn-prev">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <span id="page-info">Page 1 of 1</span>
+            <button class="btn btn-outline btn-icon" id="btn-next">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+
+          <!-- Fixed FAB -->
+          <button class="btn btn-primary btn-round" id="btn-add-new">
+            <i class="fa-solid fa-user-plus"></i>
+          </button>
+        </div>
+
+        <!-- Form View (Add/Edit) -->
+        <div id="view-form" class="view-section screen-overlay">
+          <div class="app-header">
+            <button class="btn btn-icon" id="btn-back-form">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <h2 id="form-title" style="margin: 0; flex: 1; text-align: center">
+              Add Employee
+            </h2>
+            <div style="width: 40px"></div>
+          </div>
+          <div class="form-container">
+            <form id="employee-form">
+              <input type="hidden" id="employee_id" name="employee_id" />
+
+              <div class="form-group">
+                <label
+                  >Employee Name
+                  <span style="color: var(--danger)">*</span></label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="employee_name"
+                  required
+                  placeholder="Full Name"
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Contact Number</label>
+                <input
+                  type="tel"
+                  class="form-control"
+                  id="contact_number"
+                  placeholder="+91 XXXXX XXXXX"
+                />
+              </div>
+
+              <div class="form-group">
+                <label
+                  >Employee Type
+                  <span style="color: var(--danger)">*</span></label
+                >
+                <select class="form-control" id="employee_type" required>
+                  <!-- Hydrated from JS Endpoint -->
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label
+                  >Daily Salary / Wage (₹)
+                  <span style="color: var(--danger)">*</span></label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="salary"
+                  required
+                  placeholder="Ex: 800"
+                />
+              </div>
+
+              <div class="form-group" id="status-group">
+                <label
+                  >Status <span style="color: var(--danger)">*</span></label
+                >
+                <select class="form-control" id="status" required>
+                  <option value="1">Active</option>
+                  <option value="2">Inactive / Relieved</option>
+                </select>
+              </div>
+
+              <button
+                type="submit"
+                class="btn btn-primary btn-block"
+                style="margin-top: 1rem"
+              >
+                <i class="fa-solid fa-floppy-disk"></i> Save Employee
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Detail View -->
+        <div id="view-details" class="view-section screen-overlay">
+          <div class="app-header">
+            <button class="btn btn-icon" id="btn-back-details">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <h2 style="margin: 0; flex: 1; text-align: center">
+              Employee Info
+            </h2>
+            <div style="width: 40px"></div>
+          </div>
+          <div class="details-container" id="details-container">
+            <!-- Details content dynamically inserted -->
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-backdrop" id="delete-modal">
+      <div class="modal-content">
+        <h3 style="color: var(--text-primary)">
+          <i
+            class="fa-solid fa-triangle-exclamation"
+            style="color: var(--danger)"
+          ></i>
+          Delete Employee?
+        </h3>
+        <p>
+          Are you sure you want to permanently delete this employee? Data cannot
+          be recovered.
+        </p>
+        <div class="modal-actions">
+          <button class="btn btn-outline" id="btn-cancel-delete">Cancel</button>
+          <button class="btn btn-danger" id="btn-confirm-delete">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/navbar.js"></script>
+    <script src="/js/employee.js"></script>
+  </body>
+</html>

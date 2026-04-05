@@ -1,0 +1,46 @@
+
+-- to exec query
+npx ts-node /path/file.ts
+
+sqlite3 database.db -- to connect
+
+.tables -- to list tables
+
+.schema table_name -- to see schema of table
+
+ DROP TABLE table_name; -- to drop table
+
+ .quit -- to quit
+
+ .mode column -- to see table in column format
+
+ .headers on -- to see headers
+
+ .headers off -- to hide headers
+
+ .mode csv -- to see table in csv format
+
+ .mode json -- to see table in json format
+
+ .mode insert table_name -- to see table in insert format
+
+ ------------------------------
+
+
+export interface Attendance {
+  attendance_id?: number;
+  date: string; // YYYY-MM-DD
+  project_id: number;
+  project_name?: string; // optional (JOIN)
+  status: number;
+  attendance_details: IAttendenceDetails[];
+}
+
+export interface AttendanceSummary {
+  attendance_id: number;
+  date: string;
+  project_id: number;
+  project_name: string;
+  status_name: string;
+  employee_count: number;
+}

@@ -1,0 +1,22 @@
+
+###
+GET http://localhost:3000/api/users
+Accept: application/json
+
+###
+POST http://localhost:3000/api/users
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Alice"
+}
+
+###
+GET http://localhost:3000/api/project/get-work-type
+Content-Type: application/json
+Accept: application/json
+
+###
+POST http://localhost:3000/api/report
+Content-Type: application/json

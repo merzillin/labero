@@ -1,0 +1,230 @@
+/* Report container styling */
+.report-container {
+  background: #fff;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  font-family: 'Inter', sans-serif;
+}
+
+/* Headings */
+.report-container h2, .report-container h3 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+
+/* Tables */
+.report-container table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.report-container th, .report-container td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.report-container th {
+  background: #f0f0f0;
+}
+
+/* Placeholder for charts */
+.chart-placeholder {
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #ccc;
+  color: #999;
+  margin-top: 20px;
+  border-radius: 6px;
+}
+
+/* Download Button */
+.btn-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; /* space between icon and text */
+  padding: 10px 20px;
+  background-color: #1f8ef1; /* primary blue */
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-download i {
+  font-size: 1.1rem; /* icon size */
+}
+
+.btn-download:hover {
+  background-color: #0f6cd4; /* darker blue on hover */
+  transform: translateY(-1px); /* subtle lift effect */
+}
+
+.btn-download:active {
+  background-color: #0b4a9e; /* darker on click */
+  transform: translateY(0); /* reset */
+}
+
+.btn-download:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(31, 142, 241, 0.4); /* subtle focus ring */
+}
+
+.report-form-container {
+  background: var(--bg-surface);
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-lg);
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+}
+
+.report-form  {
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.form-control {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 1rem;
+  transition: var(--transition);
+}
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: rgba(255,255,255,0.05);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+select.form-control {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+}
+
+.report-results .report-card {
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.report-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.5rem 1rem;
+}
+
+
+
+/* Base button style */
+#downloadReportBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; /* space between icon and text */
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #007bff; /* primary color */
+  background-color: transparent;
+  border: 2px solid #007bff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Hover effect */
+#downloadReportBtn:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+/* Icon size inside button */
+#downloadReportBtn i {
+  font-size: 18px;
+  transition: transform 0.3s ease;
+}
+
+/* Optional: icon animation on hover */
+#downloadReportBtn:hover i {
+  transform: translateY(-2px);
+}
+
+/* Active / pressed state */
+#downloadReportBtn:active {
+  transform: scale(0.97);
+  border-color: #0056b3;
+}
+
+/* Base primary button style */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; /* space between icon and text */
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #ffffff; /* text color */
+  background-color: #007bff; /* primary color */
+  border: 2px solid #007bff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+/* Hover effect */
+.btn-primary:hover {
+  background-color: #0056b3; /* darker shade */
+  border-color: #0056b3;
+}
+
+/* Active / pressed state */
+.btn-primary:active {
+  transform: scale(0.97);
+  background-color: #004085;
+  border-color: #004085;
+}
+
+/* Focus state for accessibility */
+.btn-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+/* Icon inside button */
+.btn-primary i {
+  font-size: 18px;
+  transition: transform 0.3s ease;
+}
+
+/* Icon hover animation */
+.btn-primary:hover i {
+  transform: translateY(-2px);
+}
