@@ -55,7 +55,21 @@ export const getEmployeeDetails = (payload: any) => {
 export const getCreditDetails = (payload: any) => {
   const { project_id, from_date, to_date } = payload;
   const stmt = db.prepare(
-    "SELECT * FROM credit_master WHERE project_id = ? AND date BETWEEN ? AND ?",
+    `SELECT 
+     cm.credit_id,
+     cm.credit_amount,
+     cm.project_id,
+     pm.project_name,
+     cm.date as credit_date,
+     cm.pay_by,
+     cm.credit_status,
+     sm.status_name
+    FROM credit_master cm
+    LEFT JOIN project_master pm ON pm.project_id = cm.project_id
+    LEFT JOIN status_master sm ON sm.status_id = cm.credit_status
+    WHERE cm.project_id = ?
+      AND cm.date BETWEEN ? AND ?
+    `,
   );
   return stmt.all(project_id, from_date, to_date);
 };
@@ -63,7 +77,22 @@ export const getCreditDetails = (payload: any) => {
 export const getDebitDetails = (payload: any) => {
   const { project_id, from_date, to_date } = payload;
   const stmt = db.prepare(
-    "SELECT * FROM debit_master WHERE project_id = ? AND date BETWEEN ? AND ?",
+    `SELECT 
+     dm.debit_id,
+     dm.debit_amount,
+     dm.project_id,
+     pm.project_name,
+     dm.date as credit_date,
+     dm.name,
+     dm.description,
+     dm.debit_status,
+     sm.status_name
+    FROM debit_master dm
+    LEFT JOIN project_master pm ON pm.project_id = dm.project_id
+    LEFT JOIN status_master sm ON sm.status_id = dm.debit_status
+    WHERE dm.project_id = ?
+      AND dm.date BETWEEN ? AND ?
+    `,
   );
   return stmt.all(project_id, from_date, to_date);
 };

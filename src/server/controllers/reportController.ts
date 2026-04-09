@@ -4,7 +4,6 @@ import {
   getAttendanceDetails,
   getCreditDetails,
   getDebitDetails,
-  getEmployeeDetails,
 } from "../models/reportModel";
 
 interface PdfOptions {
@@ -33,14 +32,46 @@ export const getReports = async (
 ): Promise<void> => {
   try {
     const attendanceDetails = getAttendanceDetails(req.body);
+    const creditDetails = getCreditDetails(req.body);
+    const debitDetails = getDebitDetails(req.body);
 
-    // ✅ Group data
+    // console.log('attendanceDetails',attendanceDetails)
+    // console.log('creditDetails',creditDetails)
+    // console.log('debitDetails',debitDetails)
+  
+
     const groupedData = groupAttendance(attendanceDetails);
+    const groupEmployeeType = getEmployeeCountDetails(groupedData)
 
-    // ✅ Generate HTML
-    const htmlContent = generateHTML(groupedData);
+    console.log('groupedData',groupEmployeeType)
 
-    // ✅ Send HTML (or later convert to PDF)
+    const attendanceTotal = groupedData.reduce(
+  (sum, item: any) => sum + item.total_amount,
+  0
+);
+
+const creditTotal = creditDetails.reduce(
+  (sum: number, item: any) => sum + Number(item.credit_amount || 0),
+  0
+);
+
+const debitTotal = debitDetails.reduce(
+  (sum: number, item: any) => sum + Number(item.debit_amount || 0),
+  0
+);
+
+// Final balance
+const finalAmount = creditTotal + attendanceTotal - debitTotal;
+
+    const htmlContent = generateHTML(
+  groupedData,
+  attendanceTotal,
+  creditTotal,
+  debitTotal,
+  finalAmount,
+  groupEmployeeType
+);
+
     res.setHeader("Content-Type", "text/html");
     res.status(200).send(htmlContent);
 
@@ -49,6 +80,7 @@ export const getReports = async (
     res.status(500).send("Internal Server Error");
   }
 };
+
 export const downloadReport = async (req: Request, res: Response) => {
   try {
     const { from_date, to_date, project_id, status_id, employee_id } = req.body;
@@ -75,7 +107,14 @@ async function htmlToPdf(
   return buffer;
 }
 
-const generateHTML = (data: any[]) => {
+const generateHTML = (
+  data: any[],
+  attendanceTotal: number,
+  creditTotal: number,
+  debitTotal: number,
+  finalAmount: number,
+  employeeData:any
+) => {
   return `
   <!DOCTYPE html>
   <html>
@@ -161,6 +200,37 @@ const generateHTML = (data: any[]) => {
   <body>
     <h1>Attendance Report</h1>
 
+<div class="card">
+  <div class="header">📊 Summary</div>
+
+  <div class="row">
+    <span class="label">Total Labour Cost</span>
+    <span class="value">₹${attendanceTotal}</span>
+  </div>
+
+  <!-- ✅ ADD THIS BLOCK -->
+  ${employeeData.countDetails.map((item: any) => `
+    <div class="row">
+      <span class="label">${item.type} (${item.count})</span>
+      <span class="value">₹${item.amount}</span>
+    </div>
+  `).join("")}
+
+  <div class="row">
+    <span class="label">Total Credit</span>
+    <span class="value">₹${creditTotal}</span>
+  </div>
+
+  <div class="row">
+    <span class="label">Total Debit</span>
+    <span class="value">₹${debitTotal}</span>
+  </div>
+
+  <div class="total">
+    Final Balance: ₹${finalAmount}
+  </div>
+</div>
+
     ${data.map(att => `
       <div class="card">
         <div class="header">
@@ -227,11 +297,10 @@ const groupAttendance = (data: any[]) => {
       };
     }
 
-   const calculatedAmount = row.is_full ? 
-  (Number(row.salary || 0) * Number(row.is_full || 0)) +  
-  (Number(row.extra_hours || 0) * Number(row.amount || 0))
-  : 
-  Number(row.work_amount || 0);
+   const calculatedAmount = row.is_full
+  ? Number(row.salary || 0) +
+    Number(row.extra_hours || 0) * Number(row.amount || 0)
+  : Number(row.work_amount || 0);
 
     grouped[row.attendance_id].employees.push({
       employee_name: row.employee_name,
@@ -249,3 +318,32 @@ const groupAttendance = (data: any[]) => {
 
   return Object.values(grouped);
 };
+
+function getEmployeeCountDetails(data: any[]) {
+  const typeData: any = {};
+
+  data.forEach(record => {
+    record.employees.forEach((emp: any) => {
+      const type = emp.employee_type;
+
+      if (!typeData[type]) {
+        typeData[type] = {
+          count: 0,
+          amount: 0
+        };
+      }
+
+      typeData[type].count += 1;
+      typeData[type].amount += Number(emp.total || 0);
+    });
+  });
+
+  const countDetails = Object.keys(typeData).map(type => ({
+    type: type,
+    count: typeData[type].count,
+    amount: typeData[type].amount
+  }));
+
+  return { countDetails };
+}
+

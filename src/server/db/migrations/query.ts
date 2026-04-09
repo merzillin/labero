@@ -7,26 +7,20 @@ export function ExeQuery(payload: any): any[] {
 
   const query = `
     SELECT 
-      am.attendance_id,
-      am.project_id,
-      pm.project_name,
-      pm.type_of_work,
-      am.date,
-      am.status,
-      sm.status_name,
-      ad.employee_id,
-      em.employee_name,
-      em.salary,
-      ad.working_hours,
-      ad.extra_hours,
-      ad.amount
-    FROM attendance_master am
-    LEFT JOIN project_master pm ON pm.project_id = am.project_id
-    LEFT JOIN status_master sm ON sm.status_id = am.status
-    LEFT JOIN attendance_detail ad on ad.attendance_id  = am.attendance_id
-    LEFT JOIN employee_master em ON em.employee_id  = em.employee_id
-    WHERE am.project_id = ?
-      AND am.date BETWEEN ? AND ?
+     dm.debit_id,
+     dm.debit_amount,
+     dm.project_id,
+     pm.project_name,
+     dm.date as credit_date,
+     dm.name,
+     dm.description,
+     dm.debit_status,
+     sm.status_name
+    FROM debit_master dm
+    LEFT JOIN project_master pm ON pm.project_id = dm.project_id
+    LEFT JOIN status_master sm ON sm.status_id = dm.debit_status
+    WHERE dm.project_id = ?
+      AND dm.date BETWEEN ? AND ?
   `;
 
   try {
@@ -41,7 +35,7 @@ export function ExeQuery(payload: any): any[] {
 }
 
 // Example usage
-const data = ExeQuery({ fromDate: "2026/04/01", toDate: "2026/04/13", project_id:1 });
+const data = ExeQuery({ fromDate: "2026-04-01", toDate: "2026-04-13", project_id:1 });
 console.log(data);
 
 // need to work
