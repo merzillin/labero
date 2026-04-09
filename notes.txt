@@ -25,22 +25,3 @@ sqlite3 database.db -- to connect
  .mode insert table_name -- to see table in insert format
 
  ------------------------------
-
-
-export interface Attendance {
-  attendance_id?: number;
-  date: string; // YYYY-MM-DD
-  project_id: number;
-  project_name?: string; // optional (JOIN)
-  status: number;
-  attendance_details: IAttendenceDetails[];
-}
-
-export interface AttendanceSummary {
-  attendance_id: number;
-  date: string;
-  project_id: number;
-  project_name: string;
-  status_name: string;
-  employee_count: number;
-}

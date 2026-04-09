@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
     paged.forEach((record) => {
       let empCount = 0;
       try {
-        empCount = JSON.parse(record.attendance_details).length;
+        
       } catch {}
 
       const card = document.createElement("div");
@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
           </div>
           <span class="attendance-emp-badge">
-            <i class="fa-solid fa-users"></i> ${empCount} emp${empCount !== 1 ? "s" : ""}
+            <i class="fa-solid fa-users"></i> ${record.employee_count} emp${record.employee_count !== 1 ? "s" : ""}
           </span>
         </div>
         <div class="card-actions" style="justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem; margin-top: 0.5rem;">
@@ -156,69 +156,82 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ─── Detail View ──────────────────────────────────────────
 
-  window.viewAttendance = function (id) {
-    const record = attendances.find((a) => a.attendance_id === id);
-    if (!record) return;
+window.viewAttendance = async function (id) {
+  const res = await fetch("/api/attendance/" + id);
+  const record = await res.json();
 
-    let attDetails = [];
-    let otDetails = [];
-    try {
-      attDetails = JSON.parse(record.attendance_details);
-    } catch {}
-    try {
-      otDetails = JSON.parse(record.overtime_details);
-    } catch {}
+  if (!record) return;
 
-    const otMap = {};
-    otDetails.forEach((o) => {
-      otMap[o.employee_id] = o;
-    });
+  const attDetails = record.attendance_details || [];
 
-    const empRows = attDetails
-      .map((emp) => {
-        const ot = otMap[emp.employee_id];
-        return `
-        <tr>
-          <td>${escapeHTML(emp.employee_name || `Employee #${emp.employee_id}`)}</td>
-          <td>${emp.working_hours}h</td>
-          <td>${ot ? ot.extra_hours + "h" : "—"}</td>
-          <td>${ot ? "₹" + ot.extra_amount : "—"}</td>
-        </tr>`;
-      })
-      .join("");
-
-    detailsContainer.innerHTML = `
-      <div class="details-card">
-        <div class="details-header">
-          <div>
-            <h3 style="font-size:1.2rem; margin-bottom:4px">${escapeHTML(record.project_name || "Unknown Project")}</h3>
-            <span class="text-muted" style="font-size:0.875rem"><i class="fa-regular fa-calendar"></i> ${formatDate(record.date)}</span>
+  const empCards = attDetails
+    .map((emp) => {
+      return `
+        <div class="employee-card view-mode">
+          <div class="employee-card-header">
+            <h4>
+              <i class="fa-solid fa-user" style="color: var(--primary); margin-right: 8px;"></i>
+              ${escapeHTML(emp.employee_name || `Employee #${emp.employee_id}`)}
+            </h4>
           </div>
-          <span class="attendance-emp-badge">
-            <i class="fa-solid fa-users"></i> ${attDetails.length} employee${attDetails.length !== 1 ? "s" : ""}
+
+          <div class="employee-card-body">
+                    <div class="info-row">
+          <span class="label">Full day</span>
+          <span class="value">
+            ${emp.is_full ? "yes" : `no - worked ${emp.work_amount}`}
           </span>
         </div>
 
-        <div style="overflow-x:auto; margin-top:1rem">
-          <table class="attendance-detail-table">
-            <thead>
-              <tr>
-                <th>Employee</th>
-                <th>Hours</th>
-                <th>Extra</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              ${empRows || '<tr><td colspan="4" style="text-align:center; color:var(--text-secondary)">No employee data</td></tr>'}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    `;
+            <div class="info-row">
+              <span class="label">Extra Hours</span>
+              <span class="value">${emp.extra_hours ? emp.extra_hours + "h" : "—"}</span>
+            </div>
 
-    showSection("view-details");
-  };
+            <div class="info-row">
+              <span class="label">Amount</span>
+              <span class="value">${emp.amount ? "₹" + emp.amount : "—"}</span>
+            </div>
+
+            <div class="info-row">
+              <span class="label">Work Reference</span>
+              <span class="value">${emp.work_ref ? escapeHTML(emp.work_ref) : "—"}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    })
+    .join("");
+
+  detailsContainer.innerHTML = `
+    <div class="details-card">
+      <div class="details-header">
+        <div>
+          <h3 style="font-size:1.2rem; margin-bottom:4px">
+            ${escapeHTML(record.project_name || "Unknown Project")}
+          </h3>
+          <span class="text-muted" style="font-size:0.875rem">
+            <i class="fa-regular fa-calendar"></i> ${formatDate(record.date)}
+          </span>
+        </div>
+
+        <span class="attendance-emp-badge">
+          <i class="fa-solid fa-users"></i> 
+          ${attDetails.length} employee${attDetails.length !== 1 ? "s" : ""}
+        </span>
+      </div>
+
+      <div class="employee-card-container">
+        ${
+          empCards ||
+          '<p style="text-align:center; color:var(--text-secondary)">No employee data</p>'
+        }
+      </div>
+    </div>
+  `;
+
+  showSection("view-details");
+};
 
   // ─── Delete ───────────────────────────────────────────────
 
@@ -328,41 +341,63 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  function addEmployeeCard(empData) {
-    if (emptyState) emptyState.style.display = "none";
-    selectedEmployees.set(empData.id.toString(), empData);
+function addEmployeeCard(empData) {
+  if (emptyState) emptyState.style.display = "none";
+  selectedEmployees.set(empData.id.toString(), empData);
 
-    const card = document.createElement("div");
-    card.className = "employee-card";
-    card.id = `emp-card-${empData.id}`;
-    card.dataset.id = empData.id;
-    card.innerHTML = `
-      <div class="employee-card-header">
-        <h4><i class="fa-solid fa-user" style="color: var(--primary); margin-right: 8px;"></i>${empData.name}</h4>
-        <button type="button" class="btn-remove" data-id="${empData.id}" title="Remove">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
+  const card = document.createElement("div");
+  card.className = "employee-card";
+  card.id = `emp-card-${empData.id}`;
+  card.dataset.id = empData.id;
+
+  card.innerHTML = `
+    <div class="employee-card-header">
+      <h4><i class="fa-solid fa-user" style="color: var(--primary); margin-right: 8px;"></i>${empData.name}</h4>
+      <button type="button" class="btn-remove" data-id="${empData.id}" title="Remove">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="employee-card-body">
+      <div class="form-group">
+        <label>Full Day?</label>
+        <input type="checkbox" class="emp-is-full" checked>
       </div>
-      <div class="employee-card-body">
-        <div class="form-group">
-          <label>Working Hours</label>
-          <input type="number" class="form-control emp-working-hours" step="0.5" min="0" max="24" value="8" required>
-        </div>
-        <div class="form-group">
-          <label>Extra Work (Hours)</label>
-          <input type="number" class="form-control emp-extra-hours" step="0.5" min="0" value="0">
-        </div>
-        <div class="form-group">
-          <label>Extra Amount (₹)</label>
-          <input type="number" class="form-control emp-extra-amount" step="10" min="0" value="0">
-        </div>
+      <div class="form-group work-amount-group" style="display:none;">
+        <label>Work Amount</label>
+        <input type="number" class="form-control emp-work-amount" min="0" value="0">
       </div>
-    `;
-    card
-      .querySelector(".btn-remove")
-      .addEventListener("click", () => removeEmployeeCard(empData.id));
-    employeeList.appendChild(card);
-  }
+      
+      <div class="form-group">
+        <label>Extra Work (Hours)</label>
+        <input type="number" class="form-control emp-extra-hours" step="0.5" min="0" value="0">
+      </div>
+      <div class="form-group">
+        <label>Extra Amount (₹)</label>
+        <input type="number" class="form-control emp-extra-amount" step="10" min="0" value="0">
+      </div>
+      <div class="form-group">
+        <label>Work Reference</label>
+        <textarea class="form-control emp-work-reference" rows="2"></textarea>
+      </div>
+    </div>
+  `;
+
+  // Remove button
+  card.querySelector(".btn-remove").addEventListener("click", () => removeEmployeeCard(empData.id));
+
+  // Toggle is_full logic
+  const isFullToggle = card.querySelector(".emp-is-full");
+  const workAmountGroup = card.querySelector(".work-amount-group");
+  isFullToggle.addEventListener("change", () => {
+    if (isFullToggle.checked) {
+      workAmountGroup.style.display = "none";
+    } else {
+      workAmountGroup.style.display = "block";
+    }
+  });
+
+  employeeList.appendChild(card);
+}
 
   function removeEmployeeCard(employeeId) {
     const card = document.getElementById(`emp-card-${employeeId}`);
@@ -393,89 +428,89 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ─── Form Submit ──────────────────────────────────────────
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData.entries());
-    console.log(formData);
-    console.log(dateInput.value);
+  const formData = new FormData(e.target);
+  const data = Object.fromEntries(formData.entries());
 
-    const [year, month, day] = data.attendance_date.split("-");
+  const [year, month, day] = data.attendance_date.split("-");
+  const formattedDate = `${year}/${month}/${day}`;
+  const projectId = projectSelect.value;
+  const date = formattedDate;
 
-    const formattedDate = `${day}/${month}/${year}`;
-    const projectId = projectSelect.value;
-    const date = formattedDate;
+  if (!projectId || !date) {
+    alert("Please select a valid date and project.");
+    return;
+  }
+  if (selectedEmployees.size === 0) {
+    alert("Please add at least one employee.");
+    return;
+  }
 
-    if (!projectId || !date) {
-      alert("Please select a valid date and project.");
-      return;
-    }
-    if (selectedEmployees.size === 0) {
-      alert("Please add at least one employee.");
-      return;
-    }
+  const attendanceDetails = [];
 
-    const attendanceDetails = [];
-    const overtimeDetails = [];
+  document.querySelectorAll(".employee-card").forEach((card) => {
+    const id = parseInt(card.dataset.id);
+    const empData = selectedEmployees.get(card.dataset.id);
+    const empName = empData ? empData.name : `Employee #${id}`;
 
-    document.querySelectorAll(".employee-card").forEach((card) => {
-      const id = parseInt(card.dataset.id);
-      const empData = selectedEmployees.get(card.dataset.id);
-      const empName = empData ? empData.name : `Employee #${id}`;
-      const workingHours =
-        parseFloat(card.querySelector(".emp-working-hours").value) || 0;
-      const extraHours =
-        parseFloat(card.querySelector(".emp-extra-hours").value) || 0;
-      const extraAmount =
-        parseFloat(card.querySelector(".emp-extra-amount").value) || 0;
+    const extraHours =
+      parseFloat(card.querySelector(".emp-extra-hours").value) || 0;
+    const extraAmount =
+      parseFloat(card.querySelector(".emp-extra-amount").value) || 0;
+    const workRef = card.querySelector(".emp-work-reference").value;
 
-      attendanceDetails.push({
-        employee_id: id,
-        employee_name: empName,
-        working_hours: workingHours,
-      });
-      if (extraHours > 0 || extraAmount > 0) {
-        overtimeDetails.push({
-          employee_id: id,
-          employee_name: empName,
-          extra_hours: extraHours,
-          extra_amount: extraAmount,
-        });
-      }
+    // NEW: is_full toggle
+    const isFull = card.querySelector(".emp-is-full").checked ? 1 : 0;
+    // NEW: work_amount only if is_full = 0
+    const workAmountInput = card.querySelector(".emp-work-amount");
+    const workAmount = isFull === 0 && workAmountInput
+      ? parseFloat(workAmountInput.value) || 0
+      : null;
+
+    attendanceDetails.push({
+      employee_id: id,
+      employee_name: empName,
+      is_full: isFull,
+      work_amount: workAmount,
+      extra_hours: extraHours,
+      amount: extraAmount,
+      work_ref: workRef
     });
-
-    const payload = {
-      project_id: parseInt(projectId),
-      date: date,
-      attendance_details: JSON.stringify(attendanceDetails),
-      overtime_details: JSON.stringify(overtimeDetails),
-    };
-
-    try {
-      const res = await fetch("/api/attendance", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error("Failed to submit");
-
-      await fetchAttendances();
-      resetForm();
-      showSection("view-list");
-    } catch (err) {
-      console.error(err);
-      alert("An error occurred while submitting attendance.");
-    }
   });
 
+  const payload = {
+    project_id: parseInt(projectId),
+    date: date,
+    attendance_details: attendanceDetails,
+  };
+
+  console.log("payload", payload);
+
+  try {
+    const res = await fetch("/api/attendance", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error("Failed to submit");
+
+    await fetchAttendances();
+    resetForm();
+    showSection("view-list");
+  } catch (err) {
+    console.error(err);
+    alert("An error occurred while submitting attendance.");
+  }
+});
   // ─── Utilities ────────────────────────────────────────────
 
   function formatDate(dateStr) {
     if (!dateStr) return "—";
 
     // Split the input "DD/MM/YYYY"
-    const [day, month, year] = dateStr.split("/").map(Number);
+    const [year , month, day] = dateStr.split("/").map(Number);
 
     // Month is 0-indexed in JavaScript Date
     const d = new Date(year, month - 1, day);

@@ -26,7 +26,7 @@ export const createAttendance = (req: Request, res: Response) => {
     const attendance = attendanceModel.createAttendance(req.body);
     res.status(201).json(attendance);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ errors: error.message });
   }
 };
 

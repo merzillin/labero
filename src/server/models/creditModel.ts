@@ -15,7 +15,7 @@ export const getAllCredits = (): Credit[] => {
   const stmt = db.prepare(
     `SELECT * FROM credit_master 
     LEFT JOIN project_master ON credit_master.project_id = project_master.project_id 
-    LEFT JOIN status_master ON credit_master.status = status_master.status_id ORDER BY credit_id DESC`,
+    LEFT JOIN status_master ON credit_master.credit_status = status_master.status_id ORDER BY credit_id DESC`,
   );
   return stmt.all() as Credit[];
 };
@@ -27,15 +27,15 @@ export const getCreditById = (credit_id: number): Credit | undefined => {
 
 export const createCredit = (credit: Credit): Credit => {
   const stmt = db.prepare(`
-    INSERT INTO credit_master (credit_amount, project_id, date, pay_by, status)
-    VALUES (@credit_amount, @project_id, @date, @pay_by, @status)
+    INSERT INTO credit_master (credit_amount, project_id, date, pay_by, credit_status)
+    VALUES (@credit_amount, @project_id, @date, @pay_by, @credit_status)
   `);
   const info = stmt.run({
     credit_amount: credit.credit_amount,
     project_id: credit.project_id,
     date: credit.date,
     pay_by: credit.pay_by,
-    status: credit.status,
+    credit_status: 7,
   });
   return {
     ...credit,
@@ -68,7 +68,7 @@ export const updateCredit = (
     values.pay_by = credit.pay_by;
   }
   if (credit.status !== undefined) {
-    updateFields.push("status = @status");
+    updateFields.push("credit_status = @status");
     values.status = credit.status;
   }
 

@@ -5,7 +5,7 @@ db.exec(
   `
   PRAGMA foreign_keys = ON;
 
-CREATE TABLE IF NOT EXISTS attendence_master (
+CREATE TABLE IF NOT EXISTS attendance_master (
   attendance_id INTEGER PRIMARY KEY AUTOINCREMENT,
   date Date NOT NULL,
   project_id INTEGER NOT NULL,
@@ -13,8 +13,8 @@ CREATE TABLE IF NOT EXISTS attendence_master (
   FOREIGN KEY (project_id) REFERENCES project_master(project_id)
 );
 
-CREATE TABLE IF NOT EXISTS attendence_detail (
-  attendence_detail_id INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE IF NOT EXISTS attendance_detail (
+  attendance_detail_id INTEGER PRIMARY KEY AUTOINCREMENT,
   employee_id INTEGER NOT NULL,
   attendance_id INTEGER NOT NULL,
   working_hours INTEGER NOT NULL,

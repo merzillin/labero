@@ -4,11 +4,13 @@ import db from "../db/connection";
 /**
  * Attendance Master Interface
  */
-export interface IAttendenceDetails {
-  attendence_detail_id?: number;
+export interface IAttendanceDetails {
+  attendance_detail_id?: number;
   employee_id: number;
   attendance_id: number;
-  working_hours: number;
+  is_full:number;
+  work_amount?: number;
+  working_hours?:number;
   extra_hours: number;
   amount: number;
   work_ref?: string;
@@ -21,7 +23,7 @@ export interface Attendance {
   project_id: number;
   status: number;
   project_name?: string; // optional (JOIN)
-  attendance_details: IAttendenceDetails[];
+  attendance_details: IAttendanceDetails[];
 }
 
 export interface AttendanceSummary {
@@ -37,34 +39,38 @@ export interface AttendanceSummary {
  * Get all attendance records
  */
 export const getAllAttendances = (): AttendanceSummary[] => {
-  const stmt = db.prepare(`
-    SELECT 
-      am.attendance_id,
-      am.date,
-      am.project_id,
-      pm.project_name,
+ const stmt = db.prepare(`
+  SELECT 
+    am.attendance_id,
+    am.date,
+    am.project_id,
+    pm.project_name,
 
-      CASE 
-        WHEN am.status = 1 THEN 'Active'
-        WHEN am.status = 0 THEN 'Inactive'
-        ELSE 'Unknown'
-      END AS status_name,
+    CASE 
+      WHEN am.status = 1 THEN 'Active'
+      WHEN am.status = 0 THEN 'Inactive'
+      ELSE 'Unknown'
+    END AS status_name,
 
-      COUNT(ad.employee_id) AS employee_count
+    COUNT(ad.employee_id) AS employee_count
 
-    FROM attendence_master am
+  FROM attendance_master am
 
-    LEFT JOIN project_master pm 
-      ON am.project_id = pm.project_id
+  LEFT JOIN project_master pm 
+    ON am.project_id = pm.project_id
 
-    LEFT JOIN attendence_detail ad 
-      ON am.attendance_id = ad.attendance_id
+  LEFT JOIN attendance_detail ad 
+    ON am.attendance_id = ad.attendance_id
 
-    GROUP BY am.attendance_id
+  GROUP BY 
+    am.attendance_id,
+    am.date,
+    am.project_id,
+    pm.project_name,
+    am.status
 
-    ORDER BY am.attendance_id DESC
-  `);
-
+  ORDER BY am.attendance_id DESC
+`);
   return stmt.all() as AttendanceSummary[];
 };
 
@@ -75,13 +81,56 @@ export const getAttendanceById = (
   attendance_id: number,
 ): Attendance | undefined => {
   const stmt = db.prepare(`
-    SELECT a.*, p.project_name
-    FROM attendence_master a
-    LEFT JOIN project_master p ON a.project_id = p.project_id
+    SELECT 
+      a.*, 
+      p.project_name,
+      d.attendance_detail_id,
+      d.employee_id,
+      d.is_full,
+      d.work_amount,
+      d.extra_hours,
+      d.amount,
+      d.work_ref,
+      e.employee_name
+    FROM attendance_master a
+    LEFT JOIN project_master p 
+      ON a.project_id = p.project_id
+    LEFT JOIN attendance_detail d 
+      ON a.attendance_id = d.attendance_id
+      LEFT JOIN employee_master e
+      ON e.employee_id = d.employee_id
     WHERE a.attendance_id = ?
   `);
 
-  return stmt.get(attendance_id) as Attendance | undefined;
+  const rows :any = stmt.all(attendance_id);
+
+  if (rows.length === 0) return undefined;
+
+  // Extract master data from first row
+  const attendance: Attendance = {
+    attendance_id: rows[0].attendance_id,
+    date: rows[0].date,
+    project_id: rows[0].project_id,
+    project_name: rows[0].project_name,
+    status: rows[0].status,
+    attendance_details: [],
+  };
+
+  // Map details
+  attendance.attendance_details = rows
+    .filter((row:any) => row.attendance_detail_id !== null)
+    .map((row:any) => ({
+      attendance_detail_id: row.attendance_detail_id,
+      employee_id: row.employee_id,
+      employee_name: row.employee_name,
+      is_full: row.is_full,
+      work_amount: row.work_amount,
+      extra_hours: row.extra_hours,
+      amount: row.amount,
+      work_ref: row.work_ref,
+    }));
+
+  return attendance;
 };
 
 /**
@@ -92,13 +141,13 @@ export const createAttendance = (attendance: Attendance): Attendance => {
   const transaction = db.transaction((attendance: Attendance) => {
     // 1️⃣ Insert master record
     const masterStmt = db.prepare(`
-      INSERT INTO attendence_master (date, project_id, status)
+      INSERT INTO attendance_master (date, project_id, status)
       VALUES (@date, @project_id, @status)
     `);
     const masterInfo = masterStmt.run({
       date: attendance.date,
       project_id: attendance.project_id,
-      status: attendance.status,
+      status: 1,
     });
 
     const attendance_id = masterInfo.lastInsertRowid as number;
@@ -109,10 +158,10 @@ export const createAttendance = (attendance: Attendance): Attendance => {
       attendance.attendance_details.length > 0
     ) {
       const detailStmt = db.prepare(`
-        INSERT INTO attendence_detail
-          (employee_id, attendance_id, working_hours, extra_hours, amount, work_ref, status)
+        INSERT INTO attendance_detail
+          (employee_id, attendance_id, is_full,work_amount, extra_hours, amount, work_ref, status)
         VALUES
-          (@employee_id, @attendance_id, @working_hours, @extra_hours, @amount, @work_ref, @status)
+          (@employee_id, @attendance_id, @is_full ,@work_amount, @extra_hours, @amount, @work_ref, @status)
       `);
 
       attendance.attendance_details = attendance.attendance_details.map(
@@ -120,16 +169,17 @@ export const createAttendance = (attendance: Attendance): Attendance => {
           const info = detailStmt.run({
             employee_id: detail.employee_id,
             attendance_id,
-            working_hours: detail.working_hours,
+            is_full: detail.is_full,
+            work_amount: detail.work_amount || 0,
             extra_hours: detail.extra_hours,
             amount: detail.amount,
             work_ref: detail.work_ref ?? null,
-            status: detail.status,
+            status: 1,
           });
 
           return {
             ...detail,
-            attendence_detail_id: info.lastInsertRowid as number,
+            attendance_detail_id: info.lastInsertRowid as number,
             attendance_id,
           };
         },
@@ -172,7 +222,7 @@ export const updateAttendance = (
 
       if (updateFields.length > 0) {
         const stmt = db.prepare(`
-        UPDATE attendence_master
+        UPDATE attendance_master
         SET ${updateFields.join(", ")}
         WHERE attendance_id = @attendance_id
       `);
@@ -185,29 +235,29 @@ export const updateAttendance = (
         attendance.attendance_details.length > 0
       ) {
         const insertDetailStmt = db.prepare(`
-        INSERT INTO attendence_detail
+        INSERT INTO attendance_detail
           (employee_id, attendance_id, working_hours, extra_hours, amount, work_ref, status)
         VALUES
           (@employee_id, @attendance_id, @working_hours, @extra_hours, @amount, @work_ref, @status)
       `);
 
         const updateDetailStmt = db.prepare(`
-        UPDATE attendence_detail
+        UPDATE attendance_detail
         SET employee_id = @employee_id,
             working_hours = @working_hours,
             extra_hours = @extra_hours,
             amount = @amount,
             work_ref = @work_ref,
             status = @status
-        WHERE attendence_detail_id = @attendence_detail_id
+        WHERE attendance_detail_id = @attendance_detail_id
       `);
 
         attendance.attendance_details = attendance.attendance_details.map(
           (detail) => {
-            if (detail.attendence_detail_id) {
+            if (detail.attendance_detail_id) {
               // Existing detail → update
               updateDetailStmt.run({
-                attendence_detail_id: detail.attendence_detail_id,
+                attendance_detail_id: detail.attendance_detail_id,
                 employee_id: detail.employee_id,
                 working_hours: detail.working_hours,
                 extra_hours: detail.extra_hours,
@@ -229,7 +279,7 @@ export const updateAttendance = (
               });
               return {
                 ...detail,
-                attendence_detail_id: info.lastInsertRowid as number,
+                attendance_detail_id: info.lastInsertRowid as number,
                 attendance_id,
               };
             }
@@ -248,7 +298,7 @@ export const updateAttendance = (
  */
 export const deleteAttendance = (attendance_id: number): void => {
   const stmt = db.prepare(`
-    DELETE FROM attendence_master
+    DELETE FROM attendance_master
     WHERE attendance_id = ?
   `);
 

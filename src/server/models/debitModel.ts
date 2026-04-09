@@ -14,6 +14,7 @@ export interface Debit {
 export const getAllDebits = (): Debit[] => {
   const stmt = db.prepare(`SELECT * FROM debit_master 
     LEFT JOIN project_master ON debit_master.project_id = project_master.project_id
+    LEFT JOIN status_master ON debit_master.debit_status = status_master.status_id 
     order by debit_id desc`);
   return stmt.all() as Debit[];
 };
@@ -25,8 +26,8 @@ export const getDebitById = (debit_id: number): Debit | undefined => {
 
 export const createDebit = (debit: Debit): Debit => {
   const stmt = db.prepare(`
-    INSERT INTO debit_master (debit_amount, project_id, name, description, date)
-    VALUES (@debit_amount, @project_id, @name, @description, @date)
+    INSERT INTO debit_master (debit_amount, project_id, name, description, date, debit_status)
+    VALUES (@debit_amount, @project_id, @name, @description, @date, @debit_status)
   `);
   const info = stmt.run({
     debit_amount: debit.debit_amount,
@@ -34,6 +35,7 @@ export const createDebit = (debit: Debit): Debit => {
     name: debit.name,
     description: debit.description || null,
     date: debit.date,
+    debit_status: 8
   });
   return { ...debit, debit_id: info.lastInsertRowid as number };
 };

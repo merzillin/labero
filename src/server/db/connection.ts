@@ -14,7 +14,9 @@ if (!fs.existsSync(dir)) {
 }
 
 // Connect to SQLite database
-const db = new Database(dbPath);
+const db = new Database(dbPath, {
+  verbose: console.log
+});
 
 // Enable foreign keys
 db.pragma('foreign_keys = ON');
